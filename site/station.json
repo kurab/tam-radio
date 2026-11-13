@@ -1,0 +1,17 @@
+{
+ "name": "Tám Radio",
+ "logo": "logo.svg",
+ "url": "https://kurab.github.io/tam-radio/",
+ "tagline": "モテるベトナムの話題",
+ "schedule": {
+  "every": "day",
+  "time": "07:00",
+  "timezone": "Asia/Ho_Chi_Minh"
+ },
+ "audio": {
+  "dir": "audio",
+  "keep_days": 14
+ },
+ "weather": true,
+ "share": true
+}

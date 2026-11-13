@@ -1,0 +1,53 @@
+# Publish Tám Radio to GitHub Pages (Phase B): the static site in this repository + the episodes still on air (14
+# days) and their MP3s from the private Blob container `site` + share cards and pages. MP3s never enter git.
+# 07:00 Vietnam time every day (after the 06:50 auto-merge), again at 07:40 (after the 07:30 hold limit), and on
+# dispatch. Azure is reached by OIDC (identity id-tam-radio-pages: read on the `site` container only; no secret).
+name: pages
+on:
+  schedule:
+    - cron: '0 0 * * *'     # 07:00 Asia/Ho_Chi_Minh
+    - cron: '40 0 * * *'    # 07:40: a held episode merged at 07:30
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: published episodes
+        run: |
+          az storage blob download-batch --auth-mode login --account-name sttamradio -s site -d published \
+            --pattern '*-ja.*' --only-show-errors -o none
+          ls -R published | head -40
+      - name: assemble
+        run: python3 build/assemble.py published _site
+      - name: share cards and pages
+        run: |
+          sudo apt-get install -y -qq --no-install-recommends librsvg2-bin >/dev/null
+          python3 -m venv .venv
+          .venv/bin/pip install -q --require-hashes -r tools/requirements.txt
+          .venv/bin/python tools/share_card.py --all --site _site
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

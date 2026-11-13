@@ -1,0 +1,52 @@
+{
+ "format": "myradio/character-1",
+ "type": "sprites",
+ "size": [
+  896,
+  768
+ ],
+ "background": "#161a26",
+ "base": "base.webp",
+ "parts": {
+  "mouth_half": {
+   "src": "mouth_half.webp",
+   "x": 436,
+   "y": 251
+  },
+  "mouth_open": {
+   "src": "mouth_open.webp",
+   "x": 428,
+   "y": 248
+  },
+  "blink": {
+   "src": "eye_closed.webp",
+   "x": 337,
+   "y": 177
+  },
+  "half_blink": {
+   "src": "eye_half.webp",
+   "x": 337,
+   "y": 177
+  },
+  "smile_mouth": {
+   "src": "smile_mouth.webp",
+   "x": 427,
+   "y": 247
+  }
+ },
+ "mouth": {
+  "1": "mouth_half",
+  "2": "mouth_open"
+ },
+ "eye": {
+  "blink": "blink",
+  "half": "half_blink"
+ },
+ "note": "Tám Radio blue: closing smile and registered depth; approved face animation retained; WebGL appearance not verified.",
+ "expressions": {
+  "smile": {
+   "mouth": "smile_mouth"
+  }
+ },
+ "depth": "depth.webp"
+}

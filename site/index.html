@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- CSP (no inline script or style, except the one pre-paint line, allowed by hash). img-src https: = link-card pictures from the article sites; connect-src = Open-Meteo weather.
+     -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-NQKXJRXH6rzl7cMYHi9RBTYG0HJMJ3wk0dzKa5fHdP8='; style-src 'self'; img-src 'self' https:; media-src 'self'; connect-src 'self' https://api.open-meteo.com; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<title>Tám Radio｜モテるベトナムの話題</title>
+<!-- Station meta: name and tagline kept in step with station.json (read by the script and the share cards). URL assumes the GitHub Pages project
+     site of kurab/tam-radio; change it here if the address changes. og:image is the station's fixed card (og-image.jpg);
+     each episode's own card is on its share page (share/<date>-ja.html). -->
+<meta name="description" content="ベトナムで今、何が話題になっているのか。ベトナムに住む日本人に向けて、モテるベトナムの話題を毎日お届けします。">
+<meta name="theme-color" content="#0c0e14">
+<meta name="color-scheme" content="dark">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://kurab.github.io/tam-radio/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tám Radio">
+<meta property="og:title" content="Tám Radio｜モテるベトナムの話題">
+<meta property="og:description" content="ベトナムで今、何が話題になっているのか。ベトナムに住む日本人に向けて、モテるベトナムの話題を毎日お届けします。">
+<meta property="og:url" content="https://kurab.github.io/tam-radio/">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:image" content="https://kurab.github.io/tam-radio/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tám Radio モテるベトナムの話題。ヘッドホンを首にかけたキャスターのイラスト">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- before first paint: the framed notice and the upright-phone layout must apply before the page renders; inline (no extra blocking request),
+     allowed by its hash in the CSP above — re-hash after editing it -->
+<script>(c => { if (self !== top) c.add("framed"); if (matchMedia("(orientation:portrait) and (max-width:820px)").matches) c.add("phone", "v"); })(document.documentElement.classList);</script>
+<link rel="stylesheet" href="assets/app.min.css?v=992f931d">
+</head>
+<body>
+<p class="framed-note"><a href="./" target="_blank" rel="noopener">Tám Radio はこちらで聞けます ↗</a></p>
+<main>
+  <h1 class="sr-only">Tám Radio｜モテるベトナムの話題</h1>
+  <section class="player" aria-label="番組プレイヤー">
+  <div id="frame">
+    <div id="stage">
+      <header class="brand"><i class="logo" aria-hidden="true"></i><b>Tám Radio</b><div class="epsel" id="epsel"><button class="epnav" id="epPrev" aria-label="前の回" title="前の回" disabled></button><button id="sdate" aria-haspopup="listbox" aria-expanded="false" aria-controls="eplist"><span></span><i></i></button><button class="epnav" id="epNext" aria-label="次の回" title="次の回" disabled></button><div id="eplist" role="listbox" aria-label="放送日"></div></div></header>
+      <div class="onair" aria-hidden="true"><i></i>ON AIR</div>
+      <nav id="toc" aria-label="目次"></nav>
+      <section id="panel" aria-label="今の話題"></section>
+      <a id="card" target="_blank" rel="noopener noreferrer"><img alt="" referrerpolicy="no-referrer"><div class="txt"><div class="site" lang="vi"></div><div class="ttl" lang="vi"></div><div class="desc" lang="vi"></div><div class="open">記事をひらく ↗</div></div></a>
+      <aside id="wx" hidden aria-label="天気"><div class="body"></div><div id="wxlist" role="listbox" aria-label="天気の地点"></div></aside>
+      <div id="cam">
+        <div id="camview">
+        <canvas id="charcv" hidden aria-hidden="true"></canvas>
+        </div>
+        <div class="rec" aria-hidden="true"><i></i>LIVE</div>
+        <div class="corner c1" aria-hidden="true"></div><div class="corner c2" aria-hidden="true"></div><div class="corner c3" aria-hidden="true"></div><div class="corner c4" aria-hidden="true"></div>
+        <div class="credit">声：COEIROINK:リリンちゃん</div>
+      </div>
+      <div id="cap"><span></span></div>
+      <div id="bar" aria-hidden="true"><b></b></div>
+    </div>
+    <button id="mutedBadge" aria-label="音声をオンにする"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.6 8.4 15.2 9.8 17.4 12l-2.2 2.2 1.4 1.4 2.2-2.2 2.2 2.2 1.4-1.4-2.2-2.2 2.2-2.2-1.4-1.4-2.2 2.2z"/></svg><span>音声オフ・クリックでオン</span></button>
+    <div id="cover"><button class="play" aria-label="再生"><svg viewBox="0 0 10 12"><path d="M0 0v12l10-6z"/></svg></button><div class="resume" id="resume" hidden><span></span><button id="from0"></button></div></div>
+    <div id="tip" role="status"></div>
+    <div id="flash" aria-hidden="true"><svg viewBox="0 0 10 12"></svg></div>
+    <div id="loading"></div>
+  </div>
+  <div id="dockSpace" aria-hidden="true"></div>
+  <div class="controls" role="group" aria-label="再生操作">
+    <button class="pp" id="pp" aria-label="再生"><svg viewBox="0 0 10 12" id="ppIcon"><path d="M0 0v12l10-6z"/></svg></button>
+    <div class="sound"><button id="mute" aria-label="音声をオフ（M）" title="音声のオン／オフ（M）"><svg viewBox="0 0 24 24" id="muteIcon"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button>
+      <input type="range" id="vol" min="0" max="1" step="0.05" value="1" aria-label="音量"></div>
+    <input type="range" id="seek" min="0" max="1000" value="0" aria-label="再生位置">
+    <span class="time" id="time">0:00 / 0:00</span>
+    <button id="rate" aria-label="再生速度 1×" title="再生速度">1×</button>
+    <div class="sharewrap"><div id="shareMenu" role="menu" hidden><button data-act="native" role="menuitem">共有…</button><button data-act="link" role="menuitem">リンクをコピー</button></div>
+    <button id="share" hidden aria-haspopup="menu"><svg viewBox="0 0 24 24"><path d="M18 16.1c-.8 0-1.5.3-2 .8l-7.1-4.2c.1-.2.1-.5.1-.7s0-.5-.1-.7L16 7.2c.5.5 1.2.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 9.8C7.5 9.3 6.8 9 6 9c-1.7 0-3 1.3-3 3s1.3 3 3 3c.8 0 1.5-.3 2-.8l7.1 4.2c-.1.2-.1.4-.1.6 0 1.6 1.3 2.9 2.9 2.9s2.9-1.3 2.9-2.9-1.2-2.9-2.8-2.9z"/></svg><span>共有</span></button></div>
+  </div>
+  <div class="mnav" id="mnav"></div>
+  <div class="chan"><span class="av" aria-hidden="true"><i class="logo"></i></span><div class="nm"><b>Tám Radio</b><small>モテるベトナムの話題</small></div>
+  </div>
+  <div id="now"></div>
+  </section>
+  <section class="links" id="links" aria-labelledby="topicsH"></section>
+  <section id="past">
+    <h2 id="pastH" class="sec">EPISODES</h2>
+    <nav class="eps" id="eps" aria-labelledby="pastH"></nav>
+  </section>
+  <!-- site footer: the station's links and policy, then the credits, then the copyright -->
+  <footer class="site-foot">
+    <nav class="links-row" aria-label="サイトの情報">
+      <a href="policy.html">ご利用にあたって</a>
+      <a class="sns" href="https://x.com/kura" target="_blank" rel="noopener noreferrer" aria-label="X（kura）"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.8-6.3L6.4 22H3.3l7.3-8.3L1 2h6.3l4.4 5.8L18.9 2Zm-1.1 18.1h1.7L6.3 3.8H4.5l13.3 16.3Z"/></svg></a>
+      <a class="sns" href="https://github.com/kurab" target="_blank" rel="noopener noreferrer" aria-label="GitHub（kurab）"><svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+    </nav>
+    <p class="credits">声：COEIROINK:リリンちゃん ／ 天気：Open-Meteo（CC BY 4.0）</p>
+    <p class="credits">プレイヤー：<a href="https://github.com/monoradio102/myradio" target="_blank" rel="noopener noreferrer">myradio</a>（ものラジオ様が公開している番組プレイヤー、MIT ライセンス）をもとに作っています</p>
+    <p class="copy"><small>© 2026 kurab</small></p>
+  </footer>
+</main>
+<audio id="audio" preload="metadata"></audio><!-- metadata: the 1.4 MB MP3 is fetched when played (HTTP Range), not on every visit -->
+<script src="assets/app.min.js?v=7d83a126" defer></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+ "format": "myradio/character-1",
+ "type": "sprites",
+ "size": [
+  896,
+  768
+ ],
+ "background": "#161a26",
+ "base": "base.webp",
+ "parts": {
+  "mask_half": {
+   "src": "mask_half.webp",
+   "x": 368,
+   "y": 242
+  },
+  "mask_open": {
+   "src": "mask_open.webp",
+   "x": 368,
+   "y": 242
+  }
+ },
+ "mouth": {
+  "1": "mask_half",
+  "2": "mask_open"
+ },
+ "eye": {},
+ "note": "Ninja Viet: opaque mask movement, no blink; registered depth; WebGL appearance not verified.",
+ "depth": "depth.webp"
+}

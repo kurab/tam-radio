@@ -1,0 +1,35 @@
+{
+ "format": "tam-radio/outfits-1",
+ "outfits": {
+  "blue": {
+   "pack": "blue/character.json",
+   "name": "青いアオザイ"
+  },
+  "pink": {
+   "pack": "pink/character.json",
+   "name": "ピンクのアオザイ"
+  },
+  "green": {
+   "pack": "green/character.json",
+   "name": "緑のアオザイ"
+  },
+  "white": {
+   "pack": "white/character.json",
+   "name": "白いアオザイ"
+  },
+  "cream": {
+   "pack": "cream/character.json",
+   "name": "クリームのアオザイ"
+  },
+  "cheering": {
+   "pack": "cheering/character.json",
+   "name": "ベトナム応援スタイル"
+  },
+  "ninja": {
+   "pack": "ninja/character.json",
+   "name": "Ninja Viet"
+  }
+ },
+ "default": "blue",
+ "note": "Outfit index (handoff 011). Each pack is myradio/character-1; the episode JSON names its outfit."
+}
