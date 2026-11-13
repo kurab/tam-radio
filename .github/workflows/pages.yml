@@ -28,6 +28,7 @@ jobs:
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       - name: published episodes
         run: |
+          mkdir -p published
           az storage blob download-batch --auth-mode login --account-name sttamradio -s site -d published \
             --pattern '*-ja.*' --only-show-errors -o none
           ls -R published | head -40
