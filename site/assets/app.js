@@ -544,11 +544,12 @@ async function load(date) {
   const srcOf = n => n.source_link || (n.link && !n.link.found_by ? n.link : n.url ? { url: n.url } : null);
   const linkLine = (l, label) => { const bad = l.status === 404 || l.status === 410, host = (() => { try { return new URL(l.url).hostname; } catch { return l.url; } })();
     return `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer"><small>${label}<span lang="vi">${esc(l.site || host)}</span>${bad ? tr("sep") + "⚠ " + tr("notFound")(l.status) : l.title ? tr("sep") + `<span lang="vi">${esc(l.title)}</span>` : ""}</small></a>`; };
-  // the news to read: headline (jumps the player there), the points, the sources, the picture
+  // the news to read: headline (jumps the player there), the points, the sources, the picture (the first one loads
+  // at once with high priority: on a wide screen it is the largest thing painted)
   $("links").innerHTML = `<h2 class="sec" id="topicsH">${tr("news")}</h2>` + ep.news.map((n, j) => {
     const src = srcOf(n), img = n.link?.image && n.link.status !== 404;
     return `<article class="item" aria-label="${esc(n.label)}"><button class="jump" data-seg="${newsSeg(j)}" title="${tr("jump")}"><span class="d">${String(j + 1).padStart(2, "0")}</span><b>${esc(n.label)}</b><i>${mmss(ep.segments[newsSeg(j)]?.start || 0)}</i></button>`
-      + (img ? `<a class="pic" href="${esc(n.link.url)}" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1"><img src="${esc(n.link.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-drop-parent></a>` : "")
+      + (img ? `<a class="pic" href="${esc(n.link.url)}" target="_blank" rel="noopener noreferrer" aria-hidden="true" tabindex="-1"><img src="${esc(n.link.image)}" alt="" ${j ? 'loading="lazy"' : 'fetchpriority="high"'} referrerpolicy="no-referrer" data-drop-parent></a>` : "")
       + `<ul class="pts">${n.points.map((x, k) => `<li><b>${esc(x)}</b></li>`).join("")}</ul>`
       + `<div class="srcs">${src ? linkLine(src, tr("source") + tr("colon")) : ""}${n.link?.found_by ? linkLine(n.link, tr("related") + tr("colon")) : ""}</div></article>`;
   }).join("");
