@@ -1,12 +1,13 @@
 # Publish Tám Radio to GitHub Pages (Phase B): the static site in this repository + the episodes still on air (14
 # days) and their MP3s from the private Blob container `site` + share cards and pages. MP3s never enter git.
 # 07:00 Vietnam time every day (after the 06:50 auto-merge), again at 07:40 (after the 07:30 hold limit), and on
-# dispatch. Azure is reached by OIDC (identity id-tam-radio-pages: read on the `site` container only; no secret).
+# dispatch. The 07:00 and 07:40 builds are dispatched by Azure's clock job (job-tam-radio-clock), since GitHub's
+# schedules started hours late on 2026-11-14; the schedules below stay, three minutes later, as a backup. Azure is reached by OIDC (identity id-tam-radio-pages: read on the `site` container only; no secret).
 name: pages
 on:
   schedule:
-    - cron: '0 0 * * *'     # 07:00 Asia/Ho_Chi_Minh
-    - cron: '40 0 * * *'    # 07:40: a held episode merged at 07:30
+    - cron: '3 0 * * *'     # 07:03 Asia/Ho_Chi_Minh: backup of the 07:00 clock
+    - cron: '43 0 * * *'    # 07:43: backup of the 07:40 clock (a held episode merged at 07:30)
   workflow_dispatch:
 permissions:
   contents: read
