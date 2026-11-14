@@ -464,6 +464,10 @@ document.addEventListener("keydown", e => {
 const VOICE = { ctx: null, an: null, gain: null, buf: null, ref: -30, db: -60 };
 function routeVoice() {
   if (VOICE.ctx || !window.AudioContext) return;
+  // not on a touch device (a phone or tablet, upright or turned): a locked screen or a closed browser suspends the
+  // Web Audio graph while the element plays on, so the episode ran silent; there the audio plays as itself
+  // (lock-screen controls) and the mouth flaps
+  if (matchMedia("(pointer:coarse)").matches) return;
   if (new URL(audio.currentSrc || audio.src, location.href).origin !== location.origin) return;
   try {
     const ctx = new AudioContext(), src = ctx.createMediaElementSource(audio);
