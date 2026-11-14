@@ -7,7 +7,8 @@ const WEEK = "日月火水木金土";
 // Japanese only: myradio's language machinery is gone. Words that never change are in index.html.
 const UI = { share: "共有", copied: "コピーしました", resumeAt: t => `${t} から続きを再生`, from0: "最初から", heard: "聞いた", partway: t => `途中 ${t}`, rate: "再生速度", wxHere: "現在地", wxNoGeo: "位置情報が使えませんでした", wxPrompt: "右上から場所を選ぶと、天気が出ます", wxChoose: "場所を選ぶ", wxUseHere: "現在地にする", wxHi: "最高", wxLo: "最低", wxRain: "降水", copyHint: "押すとコピー", news: "TOPICS", jump: "この話題へ", bye: "またあした！", related: "関連記事",
         notFound: c => `リンク先が見つかりませんでした（${c}）`, source: "出典", expired: "この回の音声は公開が終わりました", loading: "読み込み中…", empty: "まだ放送がありません",
-        sep: "・", colon: "：" };
+        sep: "・", colon: "：",
+        pvOn: "プレビュー：公開前の回です（このリンクは確認用で、期限があります）", pvGone: "プレビューを開けませんでした（リンクの期限切れか、まだ準備中です）" };
 const tr = k => UI[k];
 const info = e => e.ja;   // {title, seconds} of an episodes.json entry
 const dateJp = d => { const t = new Date(d + "T00:00:00"); return `${t.getFullYear()}年${t.getMonth() + 1}月${t.getDate()}日（${WEEK[t.getDay()]}）`; };
@@ -423,7 +424,7 @@ $("rate").onclick = () => setRate(RATES[(RATES.indexOf(audio.playbackRate) + 1) 
 const store = (k, v) => { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || "{}"); localStorage.setItem(k, JSON.stringify(v)); } catch { return {}; } };
 let curName = null, savedAt = 0;
 function savePos(force) {
-  if (!ep || !curName || (!force && performance.now() - savedAt < 2000)) return;
+  if (!ep || !curName || ep.preview || (!force && performance.now() - savedAt < 2000)) return;
   savedAt = performance.now();
   const t = audio.currentTime, pos = store("pos"), heard = store("heard");
   const closing = ep.segments.find(s => s.kind === "closing");
@@ -520,7 +521,7 @@ showSound();
 async function load(date) {
   const name = `${date}-ja`;   // file names keep the language (episodes/<date>-ja.json, audio/<date>-ja.mp3)
   savePos(true);   // the episode being left: where it stopped
-  ep = await (await fetch(`episodes/${name}.json`, { cache: "no-cache" })).json();
+  ep = PREVIEW?.date === date ? PREVIEW : await (await fetch(`episodes/${name}.json`, { cache: "no-cache" })).json();
   safeLinks(ep);
   setOutfit(ep.outfit).catch(e => console.warn("outfit", e));   // Tám Radio: the day's outfit
   listEpisodes(); wxRender();
@@ -533,7 +534,8 @@ async function load(date) {
   curPart = -1;
   // an episode can be remade under the same name: the made_at stamp keeps the browser from playing a cached older voice
   curName = name;
-  audio.src = (ep.audio || `audio/${name}.mp3`) + `?v=${encodeURIComponent(ep.made_at || "")}`;
+  // a preview's audio is a signed link, used exactly as given
+  audio.src = ep.preview ? ep.audio : (ep.audio || `audio/${name}.mp3`) + `?v=${encodeURIComponent(ep.made_at || "")}`;
   $("sdate").querySelector("span").textContent = dateJp(date);
   $("eplist").querySelectorAll("[data-date]").forEach(b => b.setAttribute("aria-selected", b.dataset.date === date));
   const k = EPS.findIndex(e => e.date === date);   // EPS is newest first
@@ -711,6 +713,18 @@ setInterval(() => { if (WX.at && Date.now() - WX.at > 30 * 60e3) wxLoad(); }, 60
 async function loadStation() {
   try { STATION = { ...STATION, ...(await (await fetch("station.json", { cache: "no-cache" })).json()) }; } catch {}
 }
+let PREVIEW = null;
+function previewUrl() {
+  try {
+    const u = new URL(new URLSearchParams(location.search).get("preview") || "");
+    return u.protocol === "https:" && u.hostname === "sttamradio.blob.core.windows.net" ? u.href : null;
+  } catch { return null; }
+}
+function previewBanner(text) {
+  const b = document.createElement("div");
+  b.className = "pvbar"; b.setAttribute("role", "status"); b.textContent = text;
+  document.body.prepend(b);
+}
 async function init() {
   // the show plays even if the character cannot be drawn
   await Promise.all([loadStation(), loadCharacter().catch(e => console.warn("character", e))]);
@@ -731,6 +745,18 @@ async function init() {
   }
   if (!eps.length) { setOutfit(OUTFITS?.default).catch(() => {}); $("loading").textContent = tr("empty"); $("cover").hidden = true; return; }
   $("sdate").disabled = eps.length < 2;
+  // ?preview=<signed link>: the operator's look at the next episode before it is published, from the project's own
+  // storage only. It joins the list as the newest episode, is not remembered, and carries a banner.
+  const pv = previewUrl();
+  if (pv) {
+    try {
+      const r = await fetch(pv, { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      PREVIEW = { ...(await r.json()), preview: true };
+      eps = [{ date: PREVIEW.date, ja: { title: PREVIEW.title, seconds: PREVIEW.seconds } }, ...eps.filter(e => e.date !== PREVIEW.date)];
+      previewBanner(tr("pvOn"));
+    } catch { previewBanner(tr("pvGone")); }
+  }
   EPS = eps; $("epPrev").hidden = $("epNext").hidden = eps.length < 2;
   const want = location.hash.slice(1);   // #<date>
   // Tám Radio patch: a link to an episode that is not (or no longer) on the site goes to the 404 page
