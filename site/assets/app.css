@@ -1258,22 +1258,52 @@ html.v .has-card #cam {
   line-height: 1.5;
   color: var(--muted);
 }
+/* upright: the same five rows in the 340-unit box beside her camera, so the hours and the credit stay inside */
 html.v #wx {
   left: 48px;
   top: 1348px;
   width: 564px;
   height: 340px;
-  padding: 20px 26px 14px;
+  padding: 16px 24px 12px;
 }
 html.v #wx .now {
-  margin-top: 10px;
+  margin-top: 6px;
+  gap: 14px;
 }
 html.v #wx .now svg {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
 }
 html.v #wx .t {
-  font-size: 68px;
+  font-size: 56px;
+}
+html.v #wx .c {
+  font-size: 22px;
+  margin-top: 2px;
+}
+html.v #wx .hl {
+  margin-top: 8px;
+  font-size: 16px;
+}
+html.v #wx .hl dd {
+  font-size: 24px;
+}
+html.v #wx .hrs {
+  padding-top: 8px;
+}
+html.v #wx .hrs li {
+  gap: 2px;
+  font-size: 18px;
+}
+html.v #wx .hrs time {
+  font-size: 15px;
+}
+html.v #wx .hrs svg {
+  width: 30px;
+  height: 30px;
+}
+html.v #wx .ft {
+  margin-top: 6px;
 }
 
 /* ---------- caption and progress ---------- */

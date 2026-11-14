@@ -31,7 +31,7 @@
 <!-- before first paint: the framed notice and the upright-phone layout must apply before the page renders; inline (no extra blocking request),
      allowed by its hash in the CSP above — re-hash after editing it -->
 <script>(c => { if (self !== top) c.add("framed"); if (matchMedia("(orientation:portrait) and (max-width:820px)").matches) c.add("phone", "v"); })(document.documentElement.classList);</script>
-<link rel="stylesheet" href="assets/app.min.css?v=992f931d">
+<link rel="stylesheet" href="assets/app.min.css?v=893ac921">
 </head>
 <body>
 <p class="framed-note"><a href="./" target="_blank" rel="noopener">Tám Radio はこちらで聞けます ↗</a></p>
@@ -97,6 +97,6 @@
   </footer>
 </main>
 <audio id="audio" preload="metadata"></audio><!-- metadata: the 1.4 MB MP3 is fetched when played (HTTP Range), not on every visit -->
-<script src="assets/app.min.js?v=7d83a126" defer></script>
+<script src="assets/app.min.js?v=16c559d0" defer></script>
 </body>
 </html>

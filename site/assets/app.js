@@ -560,7 +560,9 @@ async function load(date) {
     if (audio.readyState >= 1) go(); else audio.addEventListener("loadedmetadata", go, { once: true });
   }
   if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: ep.title, artist: STATION.name, album: dateJp(ep.date) });
-  history.replaceState(null, "", `#${date}`);
+  // the newest episode keeps the plain address, so a bookmark or a reload of the top page always opens the newest;
+  // only an older episode carries its #<date>
+  history.replaceState(null, "", date === EPS[0]?.date ? location.pathname + location.search : `#${date}`);
   // the share button shows when this episode has a share page (made at publish time); station.json "share"
   // turns the probe on
   SHARE = new URL(`share/${name}.html`, location.href).href;
