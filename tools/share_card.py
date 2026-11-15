@@ -77,9 +77,11 @@ def logo_image(svg: Path, height: int) -> Image.Image | None:
 
 
 def character(site: Path, outfit: str | None) -> Image.Image | None:
-    """The day's outfit: base picture with the eyes open and the mouth closed (the pack's base)."""
+    """The day's outfit: its share-card pose (index "og"), else the pack's base (standing, eyes open, mouth closed)."""
     index = json.loads((site / "character" / "character.json").read_text(encoding="utf-8"))
     oid = outfit if outfit in index.get("outfits", {}) else index.get("default")
+    if index["outfits"][oid].get("og"):
+        return Image.open(site / "character" / index["outfits"][oid]["og"]).convert("RGBA")
     pack_path = site / "character" / index["outfits"][oid]["pack"]
     pack = json.loads(pack_path.read_text(encoding="utf-8"))
     return Image.open(pack_path.parent / pack["base"]).convert("RGBA")
@@ -156,9 +158,10 @@ def card(site: Path, date: str, font_path: str) -> Image.Image:
     cy = (H - hl) // 2 + 10
     cam = Image.new("RGB", (cw, chh), CAM)
     if char:
-        # the pack's picture has room around her: crop to her, then fill the frame's height (feet at the bottom edge)
+        # crop to her, then fill the frame (96 % of its height, or its width for a wide pose), standing on the bottom
+        # edge; a pose cut at the waist runs out of the frame's bottom like a camera shot
         c = char.crop(char.getchannel("A").getbbox())
-        k = chh * 0.96 / c.height
+        k = min(chh * 0.96 / c.height, cw / c.width)
         c = c.resize((round(c.width * k), round(c.height * k)), Image.LANCZOS)
         cam.paste(c, ((cw - c.width) // 2, chh - c.height), c)
     im.paste(cam, (cx, cy))

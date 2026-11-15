@@ -3,31 +3,38 @@
  "outfits": {
   "blue": {
    "pack": "blue/character.json",
-   "name": "青いアオザイ"
+   "name": "青いアオザイ",
+   "og": "blue/og.webp"
   },
   "pink": {
    "pack": "pink/character.json",
-   "name": "ピンクのアオザイ"
+   "name": "ピンクのアオザイ",
+   "og": "pink/og.webp"
   },
   "green": {
    "pack": "green/character.json",
-   "name": "緑のアオザイ"
+   "name": "緑のアオザイ",
+   "og": "green/og.webp"
   },
   "white": {
    "pack": "white/character.json",
-   "name": "白いアオザイ"
+   "name": "白いアオザイ",
+   "og": "white/og.webp"
   },
   "cream": {
    "pack": "cream/character.json",
-   "name": "クリームのアオザイ"
+   "name": "クリームのアオザイ",
+   "og": "cream/og.webp"
   },
   "cheering": {
    "pack": "cheering/character.json",
-   "name": "ベトナム応援スタイル"
+   "name": "ベトナム応援スタイル",
+   "og": "cheering/og.webp"
   },
   "ninja": {
    "pack": "ninja/character.json",
-   "name": "Ninja Viet"
+   "name": "Ninja Viet",
+   "og": "ninja/og.webp"
   }
  },
  "default": "blue",
